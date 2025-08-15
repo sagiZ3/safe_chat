@@ -5,10 +5,12 @@ from colorama import Fore
 import socket
 
 
+# ================ Gemini Section ================
+
 GEMINI_API_KEY = "X"
 
 def is_contain_profanity(payload):
-    """ Checks if the payload contain any kind of profanity
+    """ Checks if the payload contain any kind of profanity.
     :param payload: The user input
     :return: true if the payload contain profanity, false if it doesn't
     """
@@ -21,6 +23,8 @@ def is_contain_profanity(payload):
     response = chat.send_message(prompt).text
 
     return "כן" in response
+
+# ================ Gemini Section ================
 
 
 LENGTH_FIELD_SIZE = 2
@@ -35,12 +39,12 @@ EXIT_COLOR = Fore.RED
 
 
 def create_msg(data):
-    """Create a valid protocol message, with length field"""
+    """Create a valid protocol message, with length field."""
     return f"{str(len(data)).zfill(LENGTH_FIELD_SIZE)}{data}".encode()
 
 
 def get_msg(my_socket: socket):
-    """Extract message from protocol, without the length field
+    """Extract message from protocol, without the length field.
        If length field does not include a number, returns False, "Error" """
     message = my_socket.recv(101).decode()  # TODO: add conversation option for getting data length
     payload_len = message[:LENGTH_FIELD_SIZE]
