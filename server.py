@@ -14,7 +14,7 @@ class Server:
         self._server_socket.listen()
         self._clients_dict = {}  # structure - client_socket: {"addr": addr, "nickname": nickname, "num_till_ban": num_till_ban)
 
-    def receive_clients(self):
+    def receive_client(self):
         while True:
             client_socket, client_addr = self._server_socket.accept()
             try:
@@ -81,4 +81,4 @@ class Server:
 
 if __name__ == '__main__':
     server = Server()
-    server.receive_clients()
+    server.receive_client()

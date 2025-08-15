@@ -6,7 +6,7 @@ from threading import Thread
 
 def run_server():
     server = Server()
-    server.receive_clients()
+    server.receive_client()
 
 
 def main():
