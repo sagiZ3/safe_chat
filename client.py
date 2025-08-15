@@ -1,7 +1,7 @@
-import protocol
-from protocol import is_contain_profanity,USERNAME_CONTAIN_PROFANITY_RESPONSE
-
 import socket
+
+import protocol
+from protocol import is_contain_profanity
 
 
 class Client:
@@ -28,7 +28,6 @@ class Client:
 
         client_msg = protocol.create_msg(client_msg)
         self._my_socket.send(client_msg)
-
 
     def receive_msg(self):  # try needed?
         try:

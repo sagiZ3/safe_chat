@@ -1,10 +1,9 @@
 import tkinter as tk
+from threading import Thread
 from tkinter import ttk
 
-from protocol import EMPTY_USERNAME_RESPONSE, USERNAME_CONTAIN_PROFANITY_RESPONSE
 from client import Client
-from threading import Thread
-
+from protocol import EMPTY_USERNAME_RESPONSE, USERNAME_CONTAIN_PROFANITY_RESPONSE
 
 # design colors
 FRAME_BORDER_COLOR = "#7f5af0"
@@ -13,6 +12,7 @@ ENTRY_BG = "#1f2937"
 BTN_BG = "#7f5af0"
 BTN_FG = "#ffffff"
 TEXT_COLOR = "#e5e7eb"
+
 
 class ChatUI:
     def __init__(self, root):
@@ -34,11 +34,14 @@ class ChatUI:
         username_frame = tk.Frame(self._inner_frame, bg=INNER_BG_COLOR)
         username_frame.pack(pady=(15, 5), padx=20, fill="x")
 
-        tk.Label(username_frame, text="שם משתמש:", font=("Segoe UI", 10), fg=TEXT_COLOR, bg=INNER_BG_COLOR).pack(side="left")
-        self._username_entry = tk.Entry(username_frame, textvariable=self._username_var, font=("Segoe UI", 10), bg=ENTRY_BG, fg=TEXT_COLOR, relief="flat")
+        tk.Label(username_frame, text="שם משתמש:", font=("Segoe UI", 10), fg=TEXT_COLOR, bg=INNER_BG_COLOR).pack(
+            side="left")
+        self._username_entry = tk.Entry(username_frame, textvariable=self._username_var, font=("Segoe UI", 10),
+                                        bg=ENTRY_BG, fg=TEXT_COLOR, relief="flat")
         self._username_entry.pack(side="left", padx=10, fill="x", expand=True)
 
-        self._set_username_btn = tk.Button(username_frame, text="✔", font=("Segoe UI", 10, "bold"), bg=BTN_BG, fg=BTN_FG,
+        self._set_username_btn = tk.Button(username_frame, text="✔", font=("Segoe UI", 10, "bold"), bg=BTN_BG,
+                                           fg=BTN_FG,
                                            relief="flat", command=self.lock_username, cursor="hand2")
         self._set_username_btn.pack(side="left")
 
@@ -130,7 +133,7 @@ class ChatUI:
 
         temp_label.place(relx=0.5, rely=rely, anchor="n")  # label position
         temp_label.lift()
-        self._root.after(show_time, temp_label.destroy) # hides the message after 'show_time' seconds
+        self._root.after(show_time, temp_label.destroy)  # hides the message after 'show_time' seconds
 
     def on_close(self):
         if self._username_locked:

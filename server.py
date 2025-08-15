@@ -1,10 +1,9 @@
-import protocol
-from protocol import is_contain_profanity, WELCOME_MSG
-from time import sleep
-
 import socket
 import threading
+from time import sleep
 
+import protocol
+from protocol import is_contain_profanity, WELCOME_MSG
 
 
 class Server:
@@ -31,7 +30,6 @@ class Server:
                     thread.start()
                 else:
                     self.self_send(client_socket, "Error with the nickname, please try again.")
-
 
     def handle_client(self, client_socket) -> None:
         while True:
