@@ -7,7 +7,7 @@ from protocol import is_contain_profanity
 class Client:
     def __init__(self):
         self._my_socket: socket.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self._my_socket.connect((protocol.SERVER_IP, protocol.PORT))
+        self._my_socket.connect((protocol.SERVER_IP, protocol.CONNECTION_PORT))
         self._nickname: str = ""
         self.messages_lst: list = []
         self.server_special_messages_dict = {"EXIT ": lambda: f"{self._nickname} left the chat!",
