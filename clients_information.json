@@ -4,7 +4,7 @@
         "WARNED",
         "BANED"
     ],
-    "blocked_macs": [
+    "clients_information": [
         {
             "mac": "xx-xx-xx-xx-xx-xx",
             "past_warnings": 0,
