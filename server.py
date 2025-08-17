@@ -27,6 +27,8 @@ class Server:
         self._clients_data: dict = {}  # structure - client_socket: {"addr": addr, "nickname": nickname, "num_till_ban": num_till_ban)
         self.clients_information_data: None | dict[str, list[dict[str, any]]] = None
         self._arp_cache: dict[str: str] = {}  # structure: {IP: MAC}
+
+        self._json_work_lock = threading.Lock()
         self._ensure_clients_information_file()
         self._update_clients_information_json()
 
@@ -90,13 +92,15 @@ class Server:
         """
 
         if not os.path.exists(protocol.BLOCKED_MACS_FILE_NAME):
-            with open(filename, "w") as f:  # type: ignore
-                json.dump(protocol.JSON_START_DATA, f, indent=4)  # type: ignore
-            logging.info("New JSON file was created for blocking evil users 📁")
+            with self._json_work_lock:
+                with open(filename, "w") as f:  # type: ignore
+                    json.dump(protocol.JSON_START_DATA, f, indent=4)  # type: ignore
+                logging.info("New JSON file was created for blocking evil users 📁")
 
-        with open(protocol.BLOCKED_MACS_FILE_NAME) as f:
-            self.clients_information_data = json.load(f)  # Inserts the JSON data into an accessible variable
-        logging.info("JSON file is now accessible!")
+        with self._json_work_lock:
+            with open(protocol.BLOCKED_MACS_FILE_NAME) as f:
+                self.clients_information_data = json.load(f)  # Inserts the JSON data into an accessible variable
+                logging.info("JSON file is now accessible!")
 
     def _extracts_user_mac_from_ip(self, ip: str) -> str:
         if ip in self._arp_cache:
@@ -115,9 +119,10 @@ class Server:
     def _update_clients_information_json(self) -> None:  # need to make a server thread for updating JSON file frequently | Or update after every change
         """ Updates the JSON file (save data) from the accessible variable """
 
-        with open(protocol.BLOCKED_MACS_FILE_NAME, "w+") as f:
-            json.dump(self.clients_information_data, f, indent=4)  # type: ignore
-            logging.info("JSON file were updated")
+        with self._json_work_lock:
+            with open(protocol.BLOCKED_MACS_FILE_NAME, "w+") as f:
+                json.dump(self.clients_information_data, f, indent=4)  # type: ignore
+                logging.info("JSON file were updated")
 
     def _is_user_blocked(self, client_ip: str) -> bool:
         for item in self.clients_information_data["clients_information"]:
