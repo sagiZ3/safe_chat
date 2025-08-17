@@ -14,7 +14,7 @@ class Client:
                                              "BAN_ACK ": lambda: "BAN_ACK "  # lambda uses for customise the nickname every time
                                             }  # a space so that the client cannot imitate the message
 
-    def is_username_includes_profanity(self, nickname) -> bool:
+    def is_username_includes_profanity(self, nickname) -> bool:  # need to be deleted - cannot give the client access to the API!
         if not is_contain_profanity(nickname):
             self._nickname = nickname
             self._my_socket.send(protocol.create_msg(self._nickname))
