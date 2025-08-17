@@ -5,6 +5,8 @@ CONNECTION_PORT = 8888
 LISTEN_EVERYONE_IP = "0.0.0.0"
 LISTEN_LOOPBACK_IP = "127.0.0.1"
 
+BLOCKED_MACS_FILE_NAME = "blocked_macs.json"  # delete - in different constants
+JSON_START_DATA = {"status_options": ["CLEAR", "WARNED", "BANED"], "blocked_macs": []}
 WELCOME_MSG = "~~Welcome To Safe Chat~~"
 
 # ================ Gemini Section ================
