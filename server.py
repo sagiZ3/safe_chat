@@ -30,11 +30,11 @@ class Server:
 
         self._json_work_lock = threading.Lock()
         self._ensure_clients_information_file()
-        self._update_clients_information_json()
 
     def receive_client(self):
         while True:
             client_socket, client_addr = self._server_socket.accept()
+            not_banned: bool = True
             try:
                 valid_nickname, nickname = protocol.get_msg(client_socket)
             except ConnectionResetError:
@@ -42,11 +42,23 @@ class Server:
                 client_socket.close()
             else:
                 if valid_nickname:
-                    self._clients_data[client_socket] = {"addr": client_addr, "nick": nickname, "num_till_ban": 0}
-                    self._self_send(client_socket, WELCOME_MSG)
-                    self._broadcast(f"{nickname} joined the chat!")
-                    thread = threading.Thread(target=self._handle_client, args=(client_socket,))
-                    thread.start()
+                    client_ip = client_addr[0]
+                    self._clients_data[client_socket] = {"ip": client_ip, "nick": nickname, "num_till_ban": 0}  # TODO: delete num_till_ban
+
+                    if self._is_client_exist(client_ip):
+                        if self._is_user_blocked(client_ip):
+                            self._self_send(client_socket, "BANNED ")
+                            not_banned = False
+                    else:
+                        self._add_client_data(client_ip)
+
+                    if not_banned:
+                        self._self_send(client_socket, WELCOME_MSG)
+                        self._broadcast(f"{nickname} joined the chat!")
+                        thread = threading.Thread(target=self._handle_client, args=(client_socket,))
+                        thread.start()
+
+                    not_banned = True
                 else:
                     self._self_send(client_socket, "Error with the nickname, please try again.")
 
@@ -127,7 +139,7 @@ class Server:
     def _is_user_blocked(self, client_ip: str) -> bool:
         for item in self.clients_information_data["clients_information"]:
             if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
-                if item["status"] == "BANED":
+                if item["status"] == "BANNED":
                     return True
                 return False
         return False

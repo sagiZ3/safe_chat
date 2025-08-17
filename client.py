@@ -11,7 +11,8 @@ class Client:
         self._nickname: str = ""
         self.messages_lst: list = []
         self.server_special_messages_dict = {"EXIT ": lambda: f"{self._nickname} left the chat!",
-                                             "BAN_ACK ": lambda: "BAN_ACK "  # lambda uses for customise the nickname every time
+                                             "BAN_ACK ": lambda: "BAN_ACK ",
+                                             "BANNED ": lambda: "BANNED "  # lambda uses for customise the nickname every time
                                             }  # a space so that the client cannot imitate the message
 
     def is_username_includes_profanity(self, nickname) -> bool:  # need to be deleted - cannot give the client access to the API!

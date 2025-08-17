@@ -1,6 +1,8 @@
 import tkinter as tk
+import webbrowser
 from threading import Thread
 from tkinter import ttk
+from tkinter import font
 
 from client import Client
 from protocol import EMPTY_USERNAME_RESPONSE, USERNAME_CONTAIN_PROFANITY_RESPONSE
@@ -104,6 +106,12 @@ class ChatUI:
                 self.show_temp_message("You've been banned from using the safe chat!", 0.5, 6000)
                 self.client.send_msg("BAN_ACK ")
                 self._root.after(6000, self._root.destroy)
+            elif self.client.messages_lst[0] == "BANNED ":
+                my_font = font.Font(family="Arial", size=100, weight="bold")
+                link = tk.Label(self._root, text="!לחץ כאן", fg="blue", background=ENTRY_BG, cursor="hand2", font=my_font)
+                link.pack(padx=20, pady=260)
+                link.bind("<Button-1>", self.open_link)
+                self.client.messages_lst.pop(0)
             else:
                 self.display_message(self.client.messages_lst.pop(0))
         self._root.after(300, self.check_for_available_messages)
@@ -143,3 +151,9 @@ class ChatUI:
             except ConnectionResetError:
                 print(f"Error sending leave message:")
         self._root.after(1400, self._root.destroy)
+
+    @staticmethod
+    def open_link(event):
+        webbrowser.open_new(r"https://miro.medium.com/1*BJArwUxopnCQlHkOhr5Mow.jpeg")
+        webbrowser.open_new(r"https://lh3.googleusercontent.com/TDK5mKAE8VQtzrPoyGRNzgC5XQh-AC6Kgr-HdAQ06wsFZQRv-m6TsGY8cl4-RoLGuKeO_NYBsOPnydhvvp6g2p6Oeg=s1280-w1280-h800")
+        
