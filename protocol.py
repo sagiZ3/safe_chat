@@ -1,7 +1,5 @@
-import google.generativeai as gen_ai  # delete - in different constants
 import socket
-
-from colorama import Fore  # delete?
+import google.generativeai as gen_ai  # delete - in different constants
 
 
 # ================ Gemini Section ================  # delete - in different constants
