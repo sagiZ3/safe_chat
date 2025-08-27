@@ -24,7 +24,7 @@ class Server:
         self._server_socket.listen()
         logging.info("=====Server is up and running=====")
 
-        self._clients_data: dict = {}  # structure - client_socket: {"addr": addr, "nickname": nickname, "num_till_ban": num_till_ban)
+        self._clients_data: dict = {}  # structure - client_socket: {client_socket: {"ip": ip, "nickname": nickname, "num_till_ban": num_till_ban)}
         self.clients_information_data: None | dict[str, list[dict[str, any]]] = None
         self._arp_cache: dict[str: str] = {}  # structure: {IP: MAC}
 
