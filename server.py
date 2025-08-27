@@ -191,4 +191,4 @@ class Server:
 
 if __name__ == '__main__':
     server = Server()
-    server.receive_client()
+    server.clients_acceptor()
