@@ -32,7 +32,7 @@ LISTEN_EVERYONE_IP = "0.0.0.0"  # delete - in different constants
 LISTEN_LOOPBACK_IP = "127.0.0.1"  # delete - in different constants
 SERVER_IP = socket.gethostbyname(socket.gethostname())  # delete - in different constants
 
-BLOCKED_MACS_FILE_NAME = "blocked_macs.json"  # delete - in different constants
+CLIENTS_INFORMATION_FILE = "clients_information.json"  # delete - in different constants
 JSON_START_DATA = {"status_options": ["CLEAR", "WARNED", "BANED"], "blocked_macs": []}
 WELCOME_MSG = "~~Welcome To Safe Chat~~"  # delete - in different constants
 USERNAME_CONTAIN_PROFANITY_RESPONSE = "Please enter a name that doesn't include any kind of profanity!"  # delete - in different constants
