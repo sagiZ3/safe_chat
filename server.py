@@ -31,7 +31,7 @@ class Server:
         self._json_work_lock = threading.Lock()
         self._ensure_clients_information_file()
 
-    def receive_client(self):
+    def clients_acceptor(self):
         while True:
             client_socket, client_addr = self._server_socket.accept()
             not_banned: bool = True
