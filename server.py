@@ -177,7 +177,7 @@ class Server:
     @staticmethod
     def _get_status_from_warnings(past_warnings) -> str:
         if past_warnings == 0: return "CLEAR"
-        if past_warnings == 3: return "BANNED"
+        if past_warnings >= 3: return "BANNED"  # also bigger because clients can open several gui on the same machine
         return "WARNED"
 
 if __name__ == '__main__':
