@@ -150,7 +150,7 @@ class ChatUI:
                 print("Client press the EXIT button")
             except ConnectionResetError:
                 print(f"Error sending leave message:")
-        self._root.after(1400, self._root.destroy)
+        self._root.after(60, self._root.destroy)
 
     @staticmethod
     def open_link(event):
