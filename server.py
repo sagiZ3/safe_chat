@@ -101,14 +101,14 @@ class Server:
         and loads the JSON data into an accessible variable
         """
 
-        if not os.path.exists(protocol.BLOCKED_MACS_FILE_NAME):
+        if not os.path.exists(protocol.CLIENTS_INFORMATION_FILE):
             with self._json_work_lock:
                 with open(filename, "w") as f:  # type: ignore
                     json.dump(protocol.JSON_START_DATA, f, indent=4)  # type: ignore
                 logging.info("New JSON file was created for blocking evil users 📁")
 
         with self._json_work_lock:
-            with open(protocol.BLOCKED_MACS_FILE_NAME) as f:
+            with open(protocol.CLIENTS_INFORMATION_FILE) as f:
                 self.clients_information_data = json.load(f)  # Inserts the JSON data into an accessible variable
                 logging.info("JSON file is now accessible!")
 
@@ -130,7 +130,7 @@ class Server:
         """ Updates the JSON file (save data) from the accessible variable """
 
         with self._json_work_lock:
-            with open(protocol.BLOCKED_MACS_FILE_NAME, "w+") as f:
+            with open(protocol.CLIENTS_INFORMATION_FILE, "w+") as f:
                 json.dump(self.clients_information_data, f, indent=4)  # type: ignore
                 logging.info("JSON file were updated")
 
