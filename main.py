@@ -1,11 +1,6 @@
-from gui import ChatUI
-from server import Server
 import tkinter as tk
 
-
-def run_server():
-    server = Server()
-    server.receive_client()
+from gui import ChatUI
 
 
 def main():
