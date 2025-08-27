@@ -24,7 +24,7 @@ class Server:
         self._server_socket.listen()
         logging.info("=====Server is up and running=====")
 
-        self._clients_data: dict = {}  # structure - client_socket: {client_socket: {"ip": ip, "nickname": nickname, "num_till_ban": num_till_ban)}
+        self._clients_data: dict = {}  # structure - client_socket: {client_socket: {"ip": ip, "nickname": nickname}
         self.clients_information_data: None | dict[str, list[dict[str, any]]] = None
         self._arp_cache: dict[str: str] = {}  # structure: {IP: MAC}
 
@@ -43,7 +43,7 @@ class Server:
             else:
                 if valid_nickname:
                     client_ip = client_addr[0]
-                    self._clients_data[client_socket] = {"ip": client_ip, "nick": nickname, "num_till_ban": 0}  # TODO: delete num_till_ban
+                    self._clients_data[client_socket] = {"ip": client_ip, "nick": nickname}
 
                     if self._is_client_exist(client_ip):
                         if self._is_user_blocked(client_ip):
