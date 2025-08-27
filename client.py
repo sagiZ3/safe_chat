@@ -10,10 +10,10 @@ class Client:
         self._my_socket.connect((protocol.SERVER_IP, protocol.CONNECTION_PORT))
         self._nickname: str = ""
         self.messages_lst: list = []
-        self.server_special_messages_dict = {"EXIT ": lambda: f"{self._nickname} left the chat!",
+        self.client_commands = {"EXIT ": lambda: f"{self._nickname} left the chat!",
                                              "BAN_ACK ": lambda: "BAN_ACK ",
                                              "BANNED ": lambda: "BANNED "  # lambda uses for customise the nickname every time
-                                            }  # a space so that the client cannot imitate the message
+                                }  # a space so that the client cannot imitate the message
 
     def is_username_includes_profanity(self, nickname) -> bool:  # need to be deleted - cannot give the client access to the API!
         if not is_contain_profanity(nickname):
@@ -24,8 +24,9 @@ class Client:
 
     def send_msg(self, payload) -> None:
         client_msg = f"{self._nickname}: {payload}"
-        if payload in self.server_special_messages_dict:
-            client_msg = self.server_special_messages_dict[payload]()
+
+        if payload in self.client_commands:
+            client_msg = self.client_commands[payload]()
 
         client_msg = protocol.create_msg(client_msg)
         self._my_socket.send(client_msg)
