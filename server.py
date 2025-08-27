@@ -158,7 +158,7 @@ class Server:
         })
         self._update_clients_information_json()
 
-    def _add_profanity_warning_and_update_status(self, client_ip: str) -> None:
+    def adds_warning_and_return_updated_status(self, client_ip: str) -> str:
         for item in self.clients_information_data["clients_information"]:
             if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
                 item["past_warnings"] += 1
