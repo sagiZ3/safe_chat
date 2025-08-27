@@ -37,8 +37,6 @@ JSON_START_DATA = {"status_options": ["CLEAR", "WARNED", "BANED"], "blocked_macs
 WELCOME_MSG = "~~Welcome To Safe Chat~~"  # delete - in different constants
 USERNAME_CONTAIN_PROFANITY_RESPONSE = "Please enter a name that doesn't include any kind of profanity!"  # delete - in different constants
 EMPTY_USERNAME_RESPONSE = "Please enter a name!"  # delete - in different constants
-COLOR = Fore.LIGHTBLUE_EX  # delete?
-EXIT_COLOR = Fore.RED  # delete?
 
 
 def create_msg(data) -> bytes:
