@@ -162,9 +162,19 @@ class Server:
         for item in self.clients_information_data["clients_information"]:
             if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
                 item["past_warnings"] += 1
-                item["status"] = self._get_status_from_warnings(item["past_warnings"])
+
+                new_status = self._get_status_from_warnings(item["past_warnings"])
+                item["status"] = new_status
+
                 self._update_clients_information_json()
-                break
+                return new_status
+        return "CLEAR"
+
+    def _get_current_past_warnings(self, client_ip) -> int:
+        for item in self.clients_information_data["clients_information"]:
+            if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
+                return item["past_warnings"]
+        return 0
 
     def _broadcast(self, msg):
         for client_socket in self._clients_data.keys():
