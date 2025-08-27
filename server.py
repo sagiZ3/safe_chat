@@ -77,23 +77,21 @@ class Server:
                     self._clients_data.pop(client_socket)
                     client_socket.close()
                     break
-                else:
-                    if is_contain_profanity(client_msg):
-                        self._broadcast(client_msg[:client_msg.find(':') + 2] + len(client_msg[client_msg.find(':') + 2:]) * '*')
-                        self._clients_data[client_socket]['num_till_ban'] += 1
-                        if self._clients_data[client_socket]['num_till_ban'] == 3:
-                            self._self_send(client_socket, f"That's it!\n")
-                            sleep(0.15)
-                            self._broadcast(self._clients_data[client_socket]['nick'] + " has been permanently banned from using the safe chat, behave yourself!")
-                            sleep(0.15)
-                            self._self_send(client_socket, "BAN_SYN ")
-                            # TODO: add file that keeps the client IP for ban forever
-                        else:
-                            self._self_send(client_socket, f"See Warning!\nYou have "
-                                                          f"{3 - self._clients_data[client_socket]['num_till_ban']}"
-                                                          f" more violations left before being banned")
+                elif is_contain_profanity(client_msg):
+                    self._broadcast(client_msg[:client_msg.find(':') + 2] + len(client_msg[client_msg.find(':') + 2:]) * '*')
+
+                    if self.adds_warning_and_return_updated_status(self._clients_data[client_socket]["ip"]) == "BANNED":
+                        self._self_send(client_socket, f"That's it!\n")
+                        sleep(0.15)
+                        self._broadcast(self._clients_data[client_socket]['nick'] + " has been permanently banned from using the safe chat, behave yourself!")
+                        sleep(0.15)
+                        self._self_send(client_socket, "BAN_SYN ")
                     else:
-                        self._broadcast(client_msg)
+                        self._self_send(client_socket, f"See Warning!\nYou have "
+                                                      f"{3 - self._get_current_past_warnings(self._clients_data[client_socket]['ip'])}"
+                                                      f" more violations left before being banned")
+                else:
+                    self._broadcast(client_msg)
             else:
                 self._self_send(client_socket, "Error in message.")
                 client_socket.recv(1024)  # Attempt to empty the socket from possible garbage
