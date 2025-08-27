@@ -156,4 +156,4 @@ class ChatUI:
     def open_link(event):
         webbrowser.open_new(r"https://miro.medium.com/1*BJArwUxopnCQlHkOhr5Mow.jpeg")
         webbrowser.open_new(r"https://lh3.googleusercontent.com/TDK5mKAE8VQtzrPoyGRNzgC5XQh-AC6Kgr-HdAQ06wsFZQRv-m6TsGY8cl4-RoLGuKeO_NYBsOPnydhvvp6g2p6Oeg=s1280-w1280-h800")
-        
+        # TODO: make a constants variables for the URLs
