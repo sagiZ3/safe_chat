@@ -58,7 +58,6 @@ class Server:
                         thread = threading.Thread(target=self._handle_client, args=(client_socket,))
                         thread.start()
 
-                    not_banned = True
                 else:
                     self._self_send(client_socket, "Error with the nickname, please try again.")
 
