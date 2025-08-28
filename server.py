@@ -25,11 +25,11 @@ class Server:
         logging.info("=====Server is up and running=====")
 
         self._clients_data: dict = {}  # structure - client_socket: {client_socket: {"ip": ip, "nickname": nickname}
-        self.clients_information_data: None | dict[str, list[dict[str, any]]] = None
+        self._clients_information_data: None | dict[str, list[dict[str, any]]] = None
         self._arp_cache: dict[str: str] = {}  # structure: {IP: MAC}
 
         self._json_work_lock = threading.Lock()
-        self._ensure_clients_information_file()
+        self.__ensure_clients_information_file()
 
     def clients_acceptor(self):
         while True:
@@ -45,23 +45,23 @@ class Server:
                     client_ip = client_addr[0]
                     self._clients_data[client_socket] = {"ip": client_ip, "nick": nickname}
 
-                    if self._is_client_exist(client_ip):
-                        if self._is_user_blocked(client_ip):
-                            self._self_send(client_socket, "BANNED ")
+                    if self.__is_client_exist(client_ip):
+                        if self.__is_user_blocked(client_ip):
+                            self.__self_send(client_socket, "BANNED ")
                             not_banned = False
                     else:
-                        self._add_client_data(client_ip)
+                        self.__add_client_data(client_ip)
 
                     if not_banned:
-                        self._self_send(client_socket, WELCOME_MSG)
-                        self._broadcast(f"{nickname} joined the chat!")
-                        thread = threading.Thread(target=self._handle_client, args=(client_socket,))
+                        self.__self_send(client_socket, WELCOME_MSG)
+                        self.__broadcast(f"{nickname} joined the chat!")
+                        thread = threading.Thread(target=self.__handle_client, args=(client_socket,))
                         thread.start()
 
                 else:
-                    self._self_send(client_socket, "Error with the nickname, please try again.")
+                    self.__self_send(client_socket, "Error with the nickname, please try again.")
 
-    def _handle_client(self, client_socket) -> None:
+    def __handle_client(self, client_socket) -> None:
         while True:
             try:
                 print(self._clients_data)
@@ -77,25 +77,25 @@ class Server:
                     client_socket.close()
                     break
                 elif is_contain_profanity(client_msg):
-                    self._broadcast(client_msg[:client_msg.find(':') + 2] + len(client_msg[client_msg.find(':') + 2:]) * '*')
+                    self.__broadcast(client_msg[:client_msg.find(':') + 2] + len(client_msg[client_msg.find(':') + 2:]) * '*')
 
-                    if self.adds_warning_and_return_updated_status(self._clients_data[client_socket]["ip"]) == "BANNED":
-                        self._self_send(client_socket, f"That's it!\n")
+                    if self.__adds_warning_and_return_updated_status(self._clients_data[client_socket]["ip"]) == "BANNED":
+                        self.__self_send(client_socket, f"That's it!\n")
                         sleep(0.15)
-                        self._broadcast(self._clients_data[client_socket]['nick'] + " has been permanently banned from using the safe chat, behave yourself!")
+                        self.__broadcast(self._clients_data[client_socket]['nick'] + " has been permanently banned from using the safe chat, behave yourself!")
                         sleep(0.15)
-                        self._self_send(client_socket, "BAN_SYN ")
+                        self.__self_send(client_socket, "BAN_SYN ")
                     else:
-                        self._self_send(client_socket, f"See Warning!\nYou have "
-                                                      f"{3 - self._get_current_past_warnings(self._clients_data[client_socket]['ip'])}"
+                        self.__self_send(client_socket, f"See Warning!\nYou have "
+                                                      f"{3 - self.__get_current_past_warnings(self._clients_data[client_socket]['ip'])}"
                                                       f" more violations left before being banned")
                 else:
-                    self._broadcast(client_msg)
+                    self.__broadcast(client_msg)
             else:
-                self._self_send(client_socket, "Error in message.")
+                self.__self_send(client_socket, "Error in message.")
                 client_socket.recv(1024)  # Attempt to empty the socket from possible garbage
 
-    def _ensure_clients_information_file(self) -> None:
+    def __ensure_clients_information_file(self) -> None:
         """ Creates a clients_information.json file if it doesn't exist
         and loads the JSON data into an accessible variable
         """
@@ -108,10 +108,10 @@ class Server:
 
         with self._json_work_lock:
             with open(protocol.CLIENTS_INFORMATION_FILE) as f:
-                self.clients_information_data = json.load(f)  # Inserts the JSON data into an accessible variable
+                self._clients_information_data = json.load(f)  # Inserts the JSON data into an accessible variable
                 logging.info("JSON file is now accessible!")
 
-    def _extracts_user_mac_from_ip(self, ip: str) -> str:
+    def __extracts_user_mac_from_ip(self, ip: str) -> str:
         if ip in self._arp_cache:
             return self._arp_cache[ip]
 
@@ -125,66 +125,66 @@ class Server:
             logging.info("Problem with finding the client's MAC address: " + str(e))
             return ""  # TODO: consider in the check
 
-    def _update_clients_information_json(self) -> None:  # need to make a server thread for updating JSON file frequently | Or update after every change
+    def __update_clients_information_json(self) -> None:  # need to make a server thread for updating JSON file frequently | Or update after every change
         """ Updates the JSON file (save data) from the accessible variable """
 
         with self._json_work_lock:
-            with open(protocol.CLIENTS_INFORMATION_FILE, "w+") as f:
-                json.dump(self.clients_information_data, f, indent=4)  # type: ignore
+            with open(protocol.CLIENTS_INFORMATION_FILE, "w") as f:
+                json.dump(self._clients_information_data, f, indent=4)  # type: ignore
                 logging.info("JSON file were updated")
 
-    def _is_user_blocked(self, client_ip: str) -> bool:
-        for item in self.clients_information_data["clients_information"]:
-            if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
+    def __is_user_blocked(self, client_ip: str) -> bool:
+        for item in self._clients_information_data["clients_information"]:
+            if item["mac"] == self.__extracts_user_mac_from_ip(client_ip):
                 if item["status"] == "BANNED":
                     return True
                 return False
         return False
 
-    def _is_client_exist(self, client_ip: str) -> bool:
+    def __is_client_exist(self, client_ip: str) -> bool:
         """ Checks if the client were added to the JSON before and returns True | False accordingly """
 
-        for item in self.clients_information_data["clients_information"]:
-            if self._extracts_user_mac_from_ip(client_ip) == item["mac"]:
+        for item in self._clients_information_data["clients_information"]:
+            if self.__extracts_user_mac_from_ip(client_ip) == item["mac"]:
                 return True
         return False
 
-    def _add_client_data(self, client_ip: str) -> None:
-        self.clients_information_data["clients_information"].append({
-            "mac": self._extracts_user_mac_from_ip(client_ip),
+    def __add_client_data(self, client_ip: str) -> None:
+        self._clients_information_data["clients_information"].append({
+            "mac": self.__extracts_user_mac_from_ip(client_ip),
             "past_warnings": 0,
             "status": "CLEAR"
         })
-        self._update_clients_information_json()
+        self.__update_clients_information_json()
 
-    def adds_warning_and_return_updated_status(self, client_ip: str) -> str:
-        for item in self.clients_information_data["clients_information"]:
-            if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
+    def __adds_warning_and_return_updated_status(self, client_ip: str) -> str:
+        for item in self._clients_information_data["clients_information"]:
+            if item["mac"] == self.__extracts_user_mac_from_ip(client_ip):
                 item["past_warnings"] += 1
 
-                new_status = self._get_status_from_warnings(item["past_warnings"])
+                new_status = self.__get_status_from_warnings(item["past_warnings"])
                 item["status"] = new_status
 
-                self._update_clients_information_json()
+                self.__update_clients_information_json()
                 return new_status
         return "CLEAR"
 
-    def _get_current_past_warnings(self, client_ip) -> int:
-        for item in self.clients_information_data["clients_information"]:
-            if item["mac"] == self._extracts_user_mac_from_ip(client_ip):
+    def __get_current_past_warnings(self, client_ip) -> int:
+        for item in self._clients_information_data["clients_information"]:
+            if item["mac"] == self.__extracts_user_mac_from_ip(client_ip):
                 return item["past_warnings"]
         return 0
 
-    def _broadcast(self, msg):
+    def __broadcast(self, msg):
         for client_socket in self._clients_data.keys():
             client_socket.send(protocol.create_msg(msg))
 
     @staticmethod
-    def _self_send(client_socket, msg):
+    def __self_send(client_socket, msg):
         client_socket.send(protocol.create_msg(msg))
 
     @staticmethod
-    def _get_status_from_warnings(past_warnings) -> str:
+    def __get_status_from_warnings(past_warnings) -> str:
         if past_warnings == 0: return "CLEAR"
         if past_warnings >= 3: return "BANNED"  # also bigger because clients can open several gui on the same machine
         return "WARNED"
