@@ -5,8 +5,7 @@ from tkinter import ttk
 from tkinter import font
 
 from client import Client
-import protocol
-from protocol import EMPTY_USERNAME_RESPONSE, USERNAME_CONTAIN_PROFANITY_RESPONSE
+from protocol import EMPTY_USERNAME_RESPONSE, USERNAME_CONTAIN_PROFANITY_RESPONSE, BANNED_MSG, BANNED_MEME
 from logging_config import logger
 
 
@@ -108,7 +107,7 @@ class ChatUI:
             if self.client.messages_lst[0] == "BAN_SYN ":
                 self._entry.config(state='disabled')
                 self.show_temp_message("You've been banned from using the safe chat!", 0.5, 6000)
-                protocol.send_segment(self.client.my_socket, "BAN_ACK ")
+                self.client.send_msg("BAN_ACK ")
                 self._root.after(6000, self._root.destroy)
             elif self.client.messages_lst[0] == "BANNED ":
                 my_font = font.Font(family="Arial", size=100, weight="bold")
@@ -118,7 +117,7 @@ class ChatUI:
                 self.client.messages_lst.pop(0)
             else:
                 self.display_message(self.client.messages_lst.pop(0))
-        self._root.after(300, self.check_for_available_messages)  # lets the CPU rest for 300ms
+                self._root.after(300, self.check_for_available_messages)  # lets the CPU rest for 300ms
 
     def display_message(self, message):
         self._text_widget.configure(state="normal")
@@ -159,5 +158,5 @@ class ChatUI:
 
     @staticmethod
     def open_link(event):
-        webbrowser.open_new(protocol.BANNED_MSG)
-        webbrowser.open_new(protocol.BANNED_MEME)
+        webbrowser.open_new(BANNED_MSG)
+        webbrowser.open_new(BANNED_MEME)
