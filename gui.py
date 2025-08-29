@@ -108,7 +108,7 @@ class ChatUI:
                 self._entry.config(state='disabled')
                 self.show_temp_message("You've been banned from using the safe chat!", 0.5, 6000)
                 self.client.send_msg("BAN_ACK ")
-                self._root.after(600, self._root.destroy)
+                self._root.after(6000, self._root.destroy)
                 return
             elif self.client.messages_lst[0] == "BANNED ":
                 my_font = font.Font(family="Arial", size=100, weight="bold")
