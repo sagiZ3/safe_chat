@@ -4,5 +4,21 @@
         "WARNED",
         "BANED"
     ],
-    "blocked_macs": []
+    "clients_information": [
+        {
+            "mac": "xx-xx-xx-xx-xx-xx",
+            "past_warnings": 0,
+            "status": "CLEAR"
+        },
+        {
+            "mac": "yy-yy-yy-yy-yy-yy",
+            "past_warnings": 2,
+            "status": "WARNED"
+        },
+        {
+            "mac": "zz-zz-zz-zz-zz-zz",
+            "past_warnings": 3,
+            "status": "BANNED"
+        }
+    ]
 }
