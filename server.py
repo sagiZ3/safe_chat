@@ -152,9 +152,7 @@ class Server:
     def __is_user_blocked(self, client_ip: str) -> bool:
         for item in self.__clients_information_data["clients_information"]:
             if item["mac"] == self.__extracts_user_mac_from_ip(client_ip):
-                if item["status"] == "BANNED":
-                    return True
-                return False
+                return item["status"] == "BANNED"
         return False
 
     def __is_client_exist(self, client_ip: str) -> bool:
