@@ -1,0 +1,8 @@
+{
+    "status_options": [
+        "CLEAR",
+        "WARNED",
+        "BANED"
+    ],
+    "blocked_macs": []
+}
