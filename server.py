@@ -207,3 +207,5 @@ class Server:
 if __name__ == '__main__':
     server = Server()
     server.clients_acceptor()
+
+# idea: a GUI for the server that visualize the current status and interaction with the clients
