@@ -139,7 +139,7 @@ class Server:
             return client_mac
         except Exception as e:
             logger.warning("Problem with finding the client's MAC address: " + str(e))
-            return ""  # TODO: consider in the check
+            return ""
 
     def __update_clients_information_json(self) -> None:  # need to make a server thread for updating JSON file frequently | Or update after every change
         """ Updates the JSON file (save data) from the accessible variable """
