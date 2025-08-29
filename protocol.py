@@ -69,7 +69,7 @@ def send_segment(my_socket: socket.socket, payload: str) -> None:
             logger.warning("The other side unexpectedly closed the connection; source: send_segment")
             break
         except Exception as e:
-            logger.warning(f"Unexpected ERROR at send_segment: {e}")
+            logger.error(f"Unexpected ERROR at send_segment: {e}")
             break
 
 
@@ -79,6 +79,11 @@ def get_payload(my_socket: socket.socket) -> tuple[bool, str]:
 
     try:
         encode_payload_len: str = my_socket.recv(LENGTH_FIELD_SIZE).decode('utf-8')  # will be always LENGTH_FIELD_SIZE because protocol puts it in the beginning of each message
+
+        if encode_payload_len == "":  # means that the other side closed the connection
+            logger.warning("The other side of the socket is closed!")
+            return False, type(ConnectionAbortedError).__name__
+
         payload: str = my_socket.recv(int(encode_payload_len)).decode('utf-8')
 
         if encode_payload_len.isdigit() and int(encode_payload_len) == len(payload.encode()):
@@ -87,7 +92,7 @@ def get_payload(my_socket: socket.socket) -> tuple[bool, str]:
         logger.warning("The other side unexpectedly closed the connection; source: get_payload")
         return False, type(e).__name__
     except Exception as e:
-        logger.warning(f"Unexpected ERROR at get_payload: {e}")
+        logger.error(f"Unexpected ERROR at get_payload: {e}")
         return False, type(e).__name__
 
     return False, "Error"
