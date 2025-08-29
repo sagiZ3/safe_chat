@@ -108,16 +108,18 @@ class ChatUI:
                 self._entry.config(state='disabled')
                 self.show_temp_message("You've been banned from using the safe chat!", 0.5, 6000)
                 self.client.send_msg("BAN_ACK ")
-                self._root.after(6000, self._root.destroy)
+                self._root.after(600, self._root.destroy)
+                return
             elif self.client.messages_lst[0] == "BANNED ":
                 my_font = font.Font(family="Arial", size=100, weight="bold")
                 link = tk.Label(self._root, text="!לחץ כאן", fg="blue", background=self.ENTRY_BG, cursor="hand2", font=my_font)
                 link.pack(padx=20, pady=260)
                 link.bind("<Button-1>", self.open_link)
                 self.client.messages_lst.pop(0)
+                return
             else:
                 self.display_message(self.client.messages_lst.pop(0))
-                self._root.after(300, self.check_for_available_messages)  # lets the CPU rest for 300ms
+        self._root.after(300, self.check_for_available_messages)  # lets the CPU rest for 300ms
 
     def display_message(self, message):
         self._text_widget.configure(state="normal")
