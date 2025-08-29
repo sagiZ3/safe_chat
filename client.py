@@ -39,6 +39,8 @@ class Client:
                 if valid_msg:
                     self.messages_lst.append(msg)
                 else:
+                    if msg == type(ConnectionAbortedError).__name__:  # session end, no need to receive messages anymore
+                        return
                     self.messages_lst.append("Error! wrong protocol")
         except Exception as e:
             logger.warning("Unexpected ERROR at receive_msg:", e)
